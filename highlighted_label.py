@@ -41,6 +41,8 @@ class Python_Label_Log:
 def python_label(image, drawable, label, color):
     fh = Python_Label_Log()
     fh.write('python_label():Hello, World!\n')
+    selection = pdb.gimp_selection_bounds(image)
+    fh.write('selection bounds: %s\n'%(selection.__str__()))
     fh.write('label_parameters: %s\n'%(label_parameters.__str__()))
     fh.write('image: "%s", drawable: "%s", label: "%s, color: %s"\n'%(image.__str__(),drawable.__str__(),label, color.__str__()))
     active_layer = image.active_layer
@@ -52,7 +54,13 @@ def python_label(image, drawable, label, color):
     t_width,t_height,t_ascent,t_descent = pdb.gimp_text_get_extents_fontname(label,pixels,PIXELS,font)
     fh.write('t_width:%d, t_height:%d, t_ascent:%d, t_descent:%d\n'%(t_width,t_height,t_ascent,t_descent))
     gimp.set_foreground((1.0, 1.0, 1.0, 1.0))
-    floating = pdb.gimp_text_fontname(image,drawable,50,50,label,0,TRUE,pixels,PIXELS,font)
+    if 0 == selection[0] :
+        label_x = 50
+        label_y = 50
+    else :
+        label_x = selection[1]
+        label_y = selection[2]
+    floating = pdb.gimp_text_fontname(image,drawable,label_x,label_y,label,0,TRUE,pixels,PIXELS,font)
     fh.write('gimp_text_fontname returns "%s"\n'%(floating.__str__()))
     #fh.close() ; return
     text = pdb.gimp_floating_sel_to_layer(floating)
@@ -77,7 +85,7 @@ def python_label(image, drawable, label, color):
     pdb.gimp_layer_resize(white,white.width+32,white.height+32,16,16)
     gimp.pdb.plug_in_gauss(image,white,3.5,3.5,0)
     gimp.set_foreground((0.0, 0.0, 0.0, 1.0))
-    floating = pdb.gimp_text_fontname(image,white,50,50,label,0,TRUE,pixels,PIXELS,font)
+    floating = pdb.gimp_text_fontname(image,white,label_x,label_y,label,0,TRUE,pixels,PIXELS,font)
     text = pdb.gimp_floating_sel_to_layer(floating)
     if None == text : text = floating
     pdb.gimp_item_set_name(text,"Text") 
