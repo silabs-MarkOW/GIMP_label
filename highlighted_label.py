@@ -6,6 +6,7 @@ import sys
 
 label_parameters = [
     (PF_STRING, "label", "label", "1"),
+    (PF_INT, "fontsize", "Font size", 20),
     (PF_COLOR, "color", "Highlight color", (255,0,0))
 ]
 
@@ -38,7 +39,7 @@ class Python_Label_Log:
             self.fh.close()
             self.fh = None
 
-def python_label(image, drawable, label, color):
+def python_label(image, drawable, label, fontsize, color):
     fh = Python_Label_Log()
     fh.write('python_label():Hello, World!\n')
     selection = pdb.gimp_selection_bounds(image)
@@ -48,7 +49,7 @@ def python_label(image, drawable, label, color):
     active_layer = image.active_layer
     fg_orig = gimp.get_foreground()
     fh.write('fg_orig: "%s"\n'%(fg_orig.__str__()))
-    pixels = 20
+    pixels = fontsize
     font = pdb.gimp_context_get_font()
     fh.write('font: "%s"\n'%(font.__str__()))
     t_width,t_height,t_ascent,t_descent = pdb.gimp_text_get_extents_fontname(label,pixels,PIXELS,font)
